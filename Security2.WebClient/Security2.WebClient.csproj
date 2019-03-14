@@ -8,6 +8,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="Refit" Version="4.6.99" />
     <PackageReference Include="Refit.HttpClientFactory" Version="4.6.99" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
@@ -15,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Security2.Dto\Security2.Dto.csproj" />
+    <ProjectReference Include="..\Security2.Gronsfer\Security2.Gronsfer.csproj" />
   </ItemGroup>
 
 </Project>

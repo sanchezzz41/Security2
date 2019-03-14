@@ -8,11 +8,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Security2.Database.Entities;
-using Security2.Domain.Models;
 using Security2.Domain.Services;
 using Security2.Domain.Utils;
-using Security2.Web.Binders;
-using Security2.Web.ResultFilter;
+using Security2.Dto.Models;
+using Security2.Web.Utils.ResultFilter;
 
 namespace Security2.Web.Controllers
 {
@@ -33,7 +32,7 @@ namespace Security2.Web.Controllers
         }
 
         [HttpPost("Registration")]
-        public async Task<Guid> Registration(string data, [ModelBinder(typeof(CustomJsonModelBinder))] UserInfo model)
+        public async Task<Guid> Registration(UserInfo model)
         {
             return await _userAccount.Registration(model);
         }

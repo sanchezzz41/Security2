@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 
-namespace Security2.CustomAuth
+namespace Security2.CustomAutt
 {
     public class TestAuthOptions : AuthenticationSchemeOptions
     {

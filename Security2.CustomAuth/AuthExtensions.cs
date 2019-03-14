@@ -1,8 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace Security2.CustomAuth
+namespace Security2.CustomAutt
 {
     public static class AuthExtensions
     {

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Security2.CustomAuth
+namespace Security2.CustomAutt
 {
 //    public class AuthHandler : SignInAuthenticationHandler<TestAuthOptions>
     public class AuthHandler : AuthenticationHandler<TestAuthOptions>

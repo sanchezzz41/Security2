@@ -1,14 +1,13 @@
 ﻿using System;
-using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Security2.Domain.Services;
 using Security2.Domain.Utils;
+using Security2.Gronsfer;
 
-namespace Security2.Web.ResultFilter
+namespace Security2.Web.Utils.ResultFilter
 {
     public class JsonEncryptResultFilter : Attribute, IResultFilter
     {

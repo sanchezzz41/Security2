@@ -1,3 +1,7 @@
+using System;
+using System.Linq;
+using System.Text;
+
 namespace Security2.Gronsfer
 {
     public class GronfeldEncrypt
@@ -12,18 +16,17 @@ namespace Security2.Gronsfer
         public string EncryptGronsfeld(string alf, string key, string data)
         {
             var alfLocal = GetKeyFullString(alf, alf.Length * 2);
+            data = Convert.ToBase64String(Encoding.UTF8.GetBytes(data));
             var keyLocal = GetKeyFullString(key, data.Length);
             var resultEncData = "";
             //Encrypt
             for (int i = 0; i < data.Length; i++)
             {
                 var dataChar = data[i];
-                var isUpper = char.IsUpper(dataChar);
-                dataChar = dataChar.ToString().ToLower()[0];
 
                 var indexInEng = alfLocal.IndexOf(dataChar);
                 indexInEng += int.Parse(keyLocal[i].ToString());
-                resultEncData += isUpper ? alfLocal[indexInEng].ToString().ToUpper() : alfLocal[indexInEng].ToString();
+                resultEncData += alfLocal[indexInEng].ToString();
             }
 
             return resultEncData;
@@ -40,19 +43,20 @@ namespace Security2.Gronsfer
         {
             var resultEncData = "";
             var alfLocal = GetKeyFullString(alf, alf.Length * 2);
+            
             var keyLocal = GetKeyFullString(key, encryptData.Length);
+            
             //Decrypt
             for (int i = 0; i < encryptData.Length; i++)
             {
                 var dataChar = encryptData[i];
-                var isUpper = char.IsUpper(dataChar);
-                dataChar = dataChar.ToString().ToLower()[0];
 
                 var indexInEng = alfLocal.LastIndexOf(dataChar);
                 indexInEng -= int.Parse(keyLocal[i].ToString());
-                resultEncData += isUpper ? alfLocal[indexInEng].ToString().ToUpper() : alfLocal[indexInEng].ToString();
+                resultEncData += alfLocal[indexInEng].ToString();
             }
 
+            resultEncData = Encoding.UTF8.GetString(Convert.FromBase64String(resultEncData));
             return resultEncData;
         }
 

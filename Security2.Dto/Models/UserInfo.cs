@@ -1,5 +1,5 @@
 
-namespace Security2.Domain.Models
+namespace Security2.Dto.Models
 {
     public class UserInfo
     {

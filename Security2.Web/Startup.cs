@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
-using Security2.CustomAuth;
 using Security2.Database;
 using Security2.Domain.Utils;
 using Swashbuckle.AspNetCore.Swagger;

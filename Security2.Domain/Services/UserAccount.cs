@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Security2.Database;
 using Security2.Database.Entities;
-using Security2.Domain.Models;
 using Security2.Domain.Utils;
+using Security2.Dto.Models;
+using Security2.Gronsfer;
 
 namespace Security2.Domain.Services
 {

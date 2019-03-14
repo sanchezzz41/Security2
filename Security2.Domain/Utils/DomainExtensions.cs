@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Security2.Database.Entities;
 using Security2.Domain.Services;
 using Security2.Gronsfer;
 
@@ -10,6 +11,7 @@ namespace Security2.Domain.Utils
         public static IServiceCollection AddDomainServices(this IServiceCollection services, IConfiguration conf)
         {
             services.AddScoped<UserAccount>();
+            services.AddScoped<NewsService>();
             services.AddScoped<GronfeldEncrypt>();
             services.AddScoped<GronsfeldService>();
             services.AddScoped<KeyGenerator>();

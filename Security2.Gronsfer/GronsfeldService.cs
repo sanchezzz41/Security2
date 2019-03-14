@@ -1,6 +1,4 @@
-﻿using Security2.Gronsfer;
-
-namespace Security2.Domain.Services
+﻿namespace Security2.Gronsfer
 {
     /// <summary>
     /// Сервис для работы с гронсфельдом

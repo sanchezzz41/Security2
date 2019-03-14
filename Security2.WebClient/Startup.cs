@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Refit;
-using Security2.WebClient.RefitClients;
+using Security2.Gronsfer;
 using Security2.WebClient.Services;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -29,13 +30,31 @@ namespace Security2.WebClient
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            //services.AddRefitClient<IUserClient>()
-            //    .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://localhost:5000/user"));
+
+            services.AddMemoryCache();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie();
             services.AddHttpClient<UserService>(opt =>
                 {
                     opt.BaseAddress = new Uri("http://localhost:5000/user");
                 })
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5));
+
+            services.AddHttpClient<NewsService>(opt =>
+                {
+                    opt.BaseAddress = new Uri("http://localhost:5000/news");
+                })
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5));
+            services.AddScoped<GronfeldEncrypt>();
+            services.AddScoped<GronsfeldService>();
+
+            var optGrons = new GronsfeldOptions
+            {
+                Alp = Configuration["Gronsfeld:alp"],
+                KeyLenght = int.Parse(Configuration["Gronsfeld:keyLenght"])
+            };
+
+            services.AddSingleton(optGrons);
             services.AddSwaggerGen(opt =>
             {
                 opt.SwaggerDoc("v1", new Info { Title = "Документация клиента", Version = "v1" });
@@ -57,6 +76,7 @@ namespace Security2.WebClient
                 a.SwaggerEndpoint("/swagger/v1/swagger.json", "API");
                 a.RoutePrefix = "api/help";
             });
+            app.UseAuthentication();
             app.UseMvc();
         }
     }
