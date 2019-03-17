@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Security2.WebClient.Models
 {
-    public class KeyModel
+    public class CacheKeyCookieModel
     {
         public static string GetCookieName = "Set-Cookie";
         public static string SetCookie = "Cookie";
@@ -15,7 +15,7 @@ namespace Security2.WebClient.Models
         public IEnumerable<string> Cookie { get; set; }
 
         /// <inheritdoc />
-        public KeyModel(string key, IEnumerable<string> cookie)
+        public CacheKeyCookieModel(string key, IEnumerable<string> cookie)
         {
             Key = key;
             Cookie = cookie;

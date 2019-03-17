@@ -31,8 +31,8 @@ namespace Security2.WebClient.Services
 
         public async Task<Guid> CreateNews(NewsInfo model, string email)
         {
-            var keyModel = _memoryCache.Get<KeyModel>(email);
-            _httpClient.DefaultRequestHeaders.Add(KeyModel.SetCookie, keyModel.Cookie);
+            var keyModel = _memoryCache.Get<CacheKeyCookieModel>(email);
+            _httpClient.DefaultRequestHeaders.Add(CacheKeyCookieModel.SetCookie, keyModel.Cookie);
             var json = JsonConvert.SerializeObject(model);
             _logger.LogInformation($"Отправляемая модель:{json}");
             var encryptStr = _gronsfeldService.Encrypt(json, keyModel.Key);
@@ -46,14 +46,37 @@ namespace Security2.WebClient.Services
 
         public async Task<List<NewsModel>> GetNews(string email)
         {
-            var keyModel = _memoryCache.Get<KeyModel>(email);
-            _httpClient.DefaultRequestHeaders.Add(KeyModel.SetCookie, keyModel.Cookie);
+            var keyModel = _memoryCache.Get<CacheKeyCookieModel>(email);
+            _httpClient.DefaultRequestHeaders.Add(CacheKeyCookieModel.SetCookie, keyModel.Cookie);
+
             var res = await _httpClient.GetAsync($"news");
             var content = await res.Content.ReadAsStringAsync();
+
             _logger.LogInformation($"Ответ с сервера:{content}");
+
             var afterDecrypt = _gronsfeldService.Decrypt(content, keyModel.Key);
+
             _logger.LogInformation($"После дешефровки:{afterDecrypt}");
+
             return JsonConvert.DeserializeObject<List<NewsModel>>(afterDecrypt);
+        }
+
+        public async Task<NewsModel> GetNewsById(string email, Guid id)
+        {
+            var keyModel = _memoryCache.Get<CacheKeyCookieModel>(email);
+            _httpClient.DefaultRequestHeaders.Add(CacheKeyCookieModel.SetCookie, keyModel.Cookie);
+
+            var encryptId = _gronsfeldService.Encrypt(id.ToString(), keyModel.Key);
+            var res = await _httpClient.GetAsync($"news/single?id={encryptId}");
+            var content = await res.Content.ReadAsStringAsync();
+
+            _logger.LogInformation($"Ответ с сервера:{content}");
+
+            var afterDecrypt = _gronsfeldService.Decrypt(content, keyModel.Key);
+
+            _logger.LogInformation($"После дешефровки:{afterDecrypt}");
+
+            return JsonConvert.DeserializeObject<NewsModel>(afterDecrypt);
         }
     }
 }

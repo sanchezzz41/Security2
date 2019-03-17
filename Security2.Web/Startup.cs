@@ -1,16 +1,13 @@
-﻿using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Net.Http.Headers;
 using Security2.Database;
 using Security2.Domain.Utils;
+using Security2.Rsa;
+using Security2.Web.Utils;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace Security2.Web
@@ -49,9 +46,11 @@ namespace Security2.Web
             services.AddDbContext<DatabaseContext>(opt =>
                 opt.UseNpgsql(Configuration["Database:ConnectionString"],
                     npgOpt => npgOpt.MigrationsAssembly("Security2.Web")));
-
+            services.AddMemoryCache();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie();
+            services.AddRsaService();
+
 
             services.AddDomainServices(Configuration);
             services.AddSwaggerGen(opt =>
@@ -60,6 +59,12 @@ namespace Security2.Web
                 
                 opt.DescribeAllEnumsAsStrings();
             });
+
+            var rsaKeys  = RsaService.GetKeyPair(8184);
+            var serverKeys = new RsaServerKeys(rsaKeys.PublicKey, rsaKeys.PrivateKey);
+
+            services.AddSingleton(serverKeys);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

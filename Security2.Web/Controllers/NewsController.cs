@@ -14,7 +14,7 @@ using Security2.Web.Utils.ResultFilter;
 
 namespace Security2.Web.Controllers
 {
-    [ApiController, Route("[controller]")]
+    [ApiController, Route("[controller]"), Authorize]
     public class NewsController : Controller
     {
         private readonly NewsService _newsService;
@@ -36,6 +36,13 @@ namespace Security2.Web.Controllers
         public async Task<List<NewsModel>> Get()
         {
             return await _newsService.Get();
+        }
+
+        [HttpGet("Single"), JsonEncryptResultFilter]
+        public async Task<NewsModel> GetById(string id, [ModelBinder(typeof(PathModelBinder))] Guid newsGuid)
+        {
+            var result = await _newsService.Get();
+            return result.Single(x => x.Id == newsGuid);
         }
     }
 }

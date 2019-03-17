@@ -29,21 +29,33 @@ namespace Security2.WebClient.Services
             _gronsfeldService = gronsfeldService;
         }
 
-        public async Task Login(UserLogin model)
+        public async Task<string> Login(UserLogin model)
         {
             var result = await _httpClient.PostAsync("user/login", JsonContent.Convert(model));
             result.EnsureSuccessStatusCode();
-            if (!result.Headers.Contains(KeyModel.GetCookieName))
+            if (!result.Headers.Contains(CacheKeyCookieModel.GetCookieName))
                 throw new AuthenticationException("Такого логина/пароля не существует");
-            var cookie = result.Headers.GetValues(KeyModel.GetCookieName);
+            var cookie = result.Headers.GetValues(CacheKeyCookieModel.GetCookieName);
             var key = await result.Content.ReadAsStringAsync();
-            _memoryCache.Set(model.Email, new KeyModel(key, cookie), TimeSpan.FromDays(1));
+            _memoryCache.Set(model.Email, new CacheKeyCookieModel(null, cookie), TimeSpan.FromDays(1));
+            return key;
+        }
+
+        public async Task SetKey(string email, string key)
+        {
+            if (!key.All(char.IsDigit))
+                throw new ArgumentException("Ключ должен состоять только из чисел");
+            var result = await _httpClient.PostAsync($"user/key?key={key}", null);
+            result.EnsureSuccessStatusCode();
+            var model = _memoryCache.Get<CacheKeyCookieModel>(email);
+            model.Key = key;
+            _memoryCache.Set(email, model);
         }
 
         public async Task<List<UserModel>> GetUsers(string userEmail)
         {
-            var storageModel = _memoryCache.Get<KeyModel>(userEmail);
-            _httpClient.DefaultRequestHeaders.Add(KeyModel.GetCookieName, storageModel.Cookie);
+            var storageModel = _memoryCache.Get<CacheKeyCookieModel>(userEmail);
+            _httpClient.DefaultRequestHeaders.Add(CacheKeyCookieModel.GetCookieName, storageModel.Cookie);
             var response = await _httpClient.GetAsync("user/original");
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();

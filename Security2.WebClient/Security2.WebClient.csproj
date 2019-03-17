@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Security2.Dto\Security2.Dto.csproj" />
     <ProjectReference Include="..\Security2.Gronsfer\Security2.Gronsfer.csproj" />
+    <ProjectReference Include="..\Security2.Rsa\Security2.Rsa.csproj" />
   </ItemGroup>
 
 </Project>

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Refit;
 using Security2.Gronsfer;
+using Security2.Rsa;
 using Security2.WebClient.Services;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -45,6 +46,14 @@ namespace Security2.WebClient
                     opt.BaseAddress = new Uri("http://localhost:5000/news");
                 })
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5));
+
+            services.AddHttpClient<RsaHttpService>(opt =>
+                {
+                    opt.BaseAddress = new Uri("http://localhost:5000/rsa");
+                })
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5));
+
+            services.AddRsaService();
             services.AddScoped<GronfeldEncrypt>();
             services.AddScoped<GronsfeldService>();
 

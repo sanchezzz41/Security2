@@ -14,6 +14,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Security2.CustomAuth\Security2.CustomAuth.csproj" />
       <ProjectReference Include="..\Security2.Domain\Security2.Domain.csproj" />
+      <ProjectReference Include="..\Security2.Rsa\Security2.Rsa.csproj" />
     </ItemGroup>
 
 </Project>
