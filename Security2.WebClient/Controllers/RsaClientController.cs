@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -13,7 +16,7 @@ using Security2.WebClient.Utils;
 
 namespace Security2.WebClient.Controllers
 {
-    [ApiController, Route("[controller]"), Authorize]
+    [ApiController, Route("[controller]")]
     public class RsaClientController : Controller
     {
         private readonly IMemoryCache _memoryCache;
@@ -24,25 +27,34 @@ namespace Security2.WebClient.Controllers
             _rsaHttpService = rsaHttpService;
         }
 
-        [HttpPost("SetKeyRsa")]
-        public async Task SetKey()
+        [HttpPost("LoginWithRsa")]
+        public async Task SetKey(ServiceInfo model)
         {
-            var email = HttpContext.GetEmail();
-            await _rsaHttpService.SetKey(email);
+            await _rsaHttpService.LoginWithRsa(model);
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, model.Email),
+                new Claim(ClaimsIdentity.DefaultNameClaimType, model.Email)
+            };
+            var claimsIdentity = new ClaimsIdentity(
+                claims,
+                CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity));
         }
 
         [HttpPost("News")]
         public async Task<Guid> CreateNews(NewsInfo model)
         {
-            var email = HttpContext.GetEmail();
-            return await _rsaHttpService.CreateNews(email, model);
+            return await _rsaHttpService.CreateNews(HttpContext.GetEmail(), model);
         }
 
         [HttpGet("News")]
         public async Task<List<NewsModel>> Get()
         {
-            var email = HttpContext.GetEmail();
-            return await _rsaHttpService.Get(email);
+            return await _rsaHttpService.Get(HttpContext.GetEmail());
         }
     }
 }

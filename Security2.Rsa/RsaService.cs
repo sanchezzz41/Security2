@@ -22,14 +22,14 @@ namespace Security2.Rsa
             var enc = new RSACryptoServiceProvider();
             var rsaParametr = publicKey.GetRsaParameters();
             enc.ImportParameters(rsaParametr);
-            return Convert.ToBase64String(enc.Encrypt(Encoding.ASCII.GetBytes(text), true));
+            return Convert.ToBase64String(enc.Encrypt(Encoding.ASCII.GetBytes(text), false));
         }
 
         public T Decrypt<T>(string data, RSAParameters privateKey)
         {
             var enc = new RSACryptoServiceProvider();
             enc.ImportParameters(privateKey);
-            var resultData = Encoding.ASCII.GetString(enc.Decrypt(Convert.FromBase64String(data), true));
+            var resultData = Encoding.ASCII.GetString(enc.Decrypt(Convert.FromBase64String(data), false));
             _logger.LogInformation($"Rsa: \nРезультат: {resultData}");
             return JsonConvert.DeserializeObject<T>(resultData);
         }

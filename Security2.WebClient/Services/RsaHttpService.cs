@@ -19,69 +19,92 @@ namespace Security2.WebClient.Services
         private readonly HttpClient _httpClient;
         private readonly IMemoryCache _memoryCache;
         private readonly RsaService _rsaService;
+        private GronsfeldService _gronsfeldService;
         private readonly ILogger<NewsService> _logger;
 
         public RsaHttpService(HttpClient httpClient,
             IMemoryCache memoryCache,
-            RsaService rsaService, ILogger<NewsService> logger)
+            RsaService rsaService, ILogger<NewsService> logger,
+            GronsfeldService gronsfeldService)
         {
             _httpClient = httpClient;
             _memoryCache = memoryCache;
             _rsaService = rsaService;
             _logger = logger;
+            _gronsfeldService = gronsfeldService;
         }
 
-        public async Task SetKey(string email)
+        public async Task LoginWithRsa(ServiceInfo model)
         {
-            var key = RsaService.GetKeyPair(4096);
-            var userKeys = new ClientRsaKeys();
-            userKeys.RsaPublicKeyUser = new RsaPublicKey(key.PublicKey);
-            userKeys.RsaPrivateKeyUser = key.PrivateKey;
-            _logger.LogInformation($"Rsa: Сгенерированные ключи:\n Pub:{userKeys.RsaPublicKeyUser.Exponent} / {userKeys.RsaPublicKeyUser.Modulus}");
+            _logger.LogInformation($"Пользователь {model.Email} ввел данные:{JsonConvert.SerializeObject(model)}");
 
-            var cookie = _memoryCache.Get<CacheKeyCookieModel>(email).Cookie;
-
-            _httpClient.DefaultRequestHeaders.Add(CacheKeyCookieModel.SetCookie, cookie);
-
-            _logger.LogInformation($"Устанавливаем ключ на сервере");
-
-            var res = await _httpClient.PostAsync($"rsa/SetRsaPublicKey",
-                JsonContent.Convert(userKeys.RsaPublicKeyUser));
+            var res = await _httpClient.GetAsync($"rsa/RsaPublicKey");
+            res.EnsureSuccessStatusCode();
 
             var serverPublicKey = await res.Content.ReadAsAsync<RsaPublicKey>();
-            _logger.LogInformation($"Rsa: Ответ с сервера: {await res.Content.ReadAsStringAsync()}");
-            userKeys.RsaPublicKeyServer = serverPublicKey;
-            _memoryCache.Set(RsaExtensions.GetUserId(email), userKeys);
+            _logger.LogInformation($"Rsa:Публичный ключ с сервера: {await res.Content.ReadAsStringAsync()}");
+
+            var encryptPassword = _rsaService.Encrypt(model.Password, serverPublicKey);
+            _logger.LogInformation($"Зашифрованный пароль гронсфельдом:{encryptPassword}");
+
+            var encryptKey = _rsaService.Encrypt(model.Key, serverPublicKey);
+            _logger.LogInformation($"Зашифрованный Ключ пуб. ключом сервера:{encryptKey}");
+            var gronsKey = model.Key.ToString();
+            model.Key = encryptKey;
+            model.Password = encryptPassword;
+
+            var authResponse = await _httpClient.PostAsync($"rsa/LoginWithRsa", JsonContent.Convert(model));
+
+            authResponse.EnsureSuccessStatusCode();
+
+            _logger.LogInformation($"Ответ успешен");
+
+            _memoryCache.Set(model.Email + ":serverPubKey", serverPublicKey);
+
+            var cookie = authResponse.Headers.GetValues(CacheKeyCookieModel.GetCookieName);
+            _memoryCache.Set(model.Email + "3", new CacheKeyCookieModel(gronsKey, cookie), TimeSpan.FromDays(1));
+
+            _logger.LogInformation($"Куки установлены");
         }
 
         public async Task<Guid> CreateNews(string email, NewsInfo model)
         {
-            var keys = _memoryCache.Get<ClientRsaKeys>(RsaExtensions.GetUserId(email));
+            var userModel = _memoryCache.Get<CacheKeyCookieModel>(email + "3");
+            _logger.LogInformation($"Ключ пользователя {email} : {userModel.Key}");
 
-            var cookie = _memoryCache.Get<CacheKeyCookieModel>(email).Cookie;
+            _httpClient.DefaultRequestHeaders.Add(CacheKeyCookieModel.SetCookie, userModel.Cookie);
+            _logger.LogInformation($"Отправляемая модель на сервер перед шифрованием:{JsonConvert.SerializeObject(model)}");
 
-            _httpClient.DefaultRequestHeaders.Add(CacheKeyCookieModel.SetCookie, cookie);
+            model.Title = _gronsfeldService.Encrypt(model.Title, userModel.Key);
+            model.Content = _gronsfeldService.Encrypt(model.Content, userModel.Key);
+            _logger.LogInformation($"Отправляемая модель на сервер после шифрования:{JsonConvert.SerializeObject(model)}");
 
-            var encryptData = _rsaService.Encrypt(model, keys.RsaPublicKeyServer);
-            var res = await _httpClient.PostAsync($"rsa/News?data={encryptData}",null);
+            var response = await _httpClient.PostAsync($"rsa/News", JsonContent.Convert(model));
 
-            var resultString = await res.Content.ReadAsStringAsync();
-            var encryptModel = _rsaService.Decrypt(resultString, keys.RsaPrivateKeyUser);
-            return JsonConvert.DeserializeObject<Guid>(encryptModel);
+            var responseString = await response.Content.ReadAsStringAsync();
+            var newsGuid = _gronsfeldService.Decrypt(responseString, userModel.Key);
+            return Guid.Parse(newsGuid);
         }
 
         public async Task<List<NewsModel>> Get(string email)
         {
-            var keys = _memoryCache.Get<ClientRsaKeys>(RsaExtensions.GetUserId(email));
+            var userModel = _memoryCache.Get<CacheKeyCookieModel>(email + "3");
+            _logger.LogInformation($"Ключ пользователя {email} : {userModel.Key}");
 
-            var cookie = _memoryCache.Get<CacheKeyCookieModel>(email).Cookie;
+            _httpClient.DefaultRequestHeaders.Add(CacheKeyCookieModel.SetCookie, userModel.Cookie);
+            _logger.LogInformation($"Запрос на новости отпарвляется.");
 
-            _httpClient.DefaultRequestHeaders.Add(CacheKeyCookieModel.SetCookie, cookie);
+            var response = await _httpClient.GetAsync($"rsa/News");
 
-            var res = await _httpClient.GetAsync($"rsa/News");
-            res.EnsureSuccessStatusCode();
-            var resultString = await res.Content.ReadAsStringAsync();
-            return _rsaService.Decrypt<List<NewsModel>>(resultString, keys.RsaPrivateKeyUser);
+            var responseList = await response.Content.ReadAsAsync<List<NewsModel>>();
+            _logger.LogInformation($"Пришедший список: {JsonConvert.SerializeObject(responseList)}");
+            foreach (var item in responseList)
+            {
+                item.Content = _gronsfeldService.Decrypt(item.Content, userModel.Key);
+                item.Title = _gronsfeldService.Decrypt(item.Title, userModel.Key);
+            }
+            _logger.LogInformation($"Пришедший список после дешифровки: {JsonConvert.SerializeObject(responseList)}");
+            return responseList;
         }
     }
 }

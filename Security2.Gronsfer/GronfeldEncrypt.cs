@@ -15,8 +15,11 @@ namespace Security2.Gronsfer
         /// <returns></returns>
         public string EncryptGronsfeld(string alf, string key, string data)
         {
-            var alfLocal = GetKeyFullString(alf, alf.Length * 2);
             data = Convert.ToBase64String(Encoding.UTF8.GetBytes(data));
+            
+            var length = data.Length/alf.Length + 2;
+            var alfLocal = GetAlfFullString(alf, alf.Length * length);
+            
             var keyLocal = GetKeyFullString(key, data.Length);
             var resultEncData = "";
             //Encrypt
@@ -25,7 +28,7 @@ namespace Security2.Gronsfer
                 var dataChar = data[i];
 
                 var indexInEng = alfLocal.IndexOf(dataChar);
-                indexInEng += int.Parse(keyLocal[i].ToString());
+                indexInEng += int.Parse(keyLocal[i].ToString()) + i;
                 resultEncData += alfLocal[indexInEng].ToString();
             }
 
@@ -42,17 +45,19 @@ namespace Security2.Gronsfer
         public string DecryptGronsfeld(string alf, string key, string encryptData)
         {
             var resultEncData = "";
-            var alfLocal = GetKeyFullString(alf, alf.Length * 2);
+            
+            var length = encryptData.Length/alf.Length + 2;
+            
+            var alfLocal = GetAlfFullString(alf, alf.Length * length);
             
             var keyLocal = GetKeyFullString(key, encryptData.Length);
-            
             //Decrypt
             for (int i = 0; i < encryptData.Length; i++)
             {
                 var dataChar = encryptData[i];
 
                 var indexInEng = alfLocal.LastIndexOf(dataChar);
-                indexInEng -= int.Parse(keyLocal[i].ToString());
+                indexInEng -= (int.Parse(keyLocal[i].ToString()) + i);
                 resultEncData += alfLocal[indexInEng].ToString();
             }
 
@@ -60,6 +65,19 @@ namespace Security2.Gronsfer
             return resultEncData;
         }
 
+        private string GetAlfFullString(string key, int count)
+        {
+            var resultKey = "";
+            for (int i = 0, keyIndex = 0; i < count; i++, keyIndex++)
+            {
+                if (keyIndex == key.Length)
+                    keyIndex = 0;
+                resultKey += key[keyIndex];
+            }
+
+            return resultKey;
+        }
+        
         private string GetKeyFullString(string key, int count)
         {
             var resultKey = "";
