@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -93,6 +94,8 @@ namespace Security2.Web.Controllers
         {
             var email = HttpContext.GetEmail();
             _logger.LogInformation($"Пользователь:{email} установил себе ключ:{key}");
+            if(!key.All(char.IsDigit))
+                throw new ArgumentException("Ключ не валидный.");
             _memoryCache.Set(email, key, TimeSpan.FromDays(1));
         }
 

@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.Language;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -15,8 +14,6 @@ using Security2.Dto.Models;
 using Security2.Gronsfer;
 using Security2.Rsa;
 using Security2.Web.Utils;
-using Security2.Web.Utils.Binders;
-using Security2.Web.Utils.ResultFilter;
 
 
 namespace Security2.Web.Controllers
@@ -49,7 +46,8 @@ namespace Security2.Web.Controllers
         }
 
         /// <summary>
-        /// Устанавливает на сервере сим ключ
+        /// Устанавливает на сервере сим. ключ
+        /// и авторизация пользователя
         /// </summary>
         /// <param name="publicKey"></param>
         /// <returns>Возвращает публичный ключ сервера</returns>
@@ -90,7 +88,7 @@ namespace Security2.Web.Controllers
 
 
         /// <summary>
-        ///
+        /// Возврат пуб. ключа
         /// </summary>
         /// <param name=""></param>
         /// <returns></returns>
@@ -100,6 +98,11 @@ namespace Security2.Web.Controllers
             return new RsaPublicKey(_rsaServerKeys.PublicKey);
         }
 
+        /// <summary>
+        /// Созд. новости
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost("News")]
         public async Task<string> CreateNews(NewsInfo model)
         {
@@ -114,6 +117,10 @@ namespace Security2.Web.Controllers
             return _gronsfeldService.Encrypt(result.ToString(), key);
         }
 
+        /// <summary>
+        /// Возвращение новостей
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("News")]
         public async Task<List<NewsModel>> Get()
         {

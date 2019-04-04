@@ -14,6 +14,9 @@ using Security2.WebClient.Utils;
 
 namespace Security2.WebClient.Services
 {
+    /// <summary>
+    /// Сервис для работы с клиентом
+    /// </summary>
     public class RsaHttpService
     {
         private readonly HttpClient _httpClient;

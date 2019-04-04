@@ -51,7 +51,6 @@ namespace Security2.Gronsfer
             var alfLocal = GetAlfFullString(alf, alf.Length * length);
             
             var keyLocal = GetKeyFullString(key, encryptData.Length);
-            //Decrypt
             for (int i = 0; i < encryptData.Length; i++)
             {
                 var dataChar = encryptData[i];

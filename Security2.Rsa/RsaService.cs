@@ -6,6 +6,9 @@ using Newtonsoft.Json;
 
 namespace Security2.Rsa
 {
+    /// <summary>
+    /// Сервис для работы с RSA
+    /// </summary>
     public class RsaService
     {
         private readonly ILogger<RsaService> _logger;

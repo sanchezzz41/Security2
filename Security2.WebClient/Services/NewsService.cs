@@ -29,6 +29,12 @@ namespace Security2.WebClient.Services
             _logger = logger;
         }
 
+        /// <summary>
+        /// Создание новости
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public async Task<Guid> CreateNews(NewsInfo model, string email)
         {
             var keyModel = _memoryCache.Get<CacheKeyCookieModel>(email);
