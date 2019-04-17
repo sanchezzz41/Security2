@@ -12,5 +12,14 @@ namespace Security2.Database
 
         public DbSet<User> Users { get; set; }
         public DbSet<News> News { get; set; }
+        
+        public DbSet<UserPassword> UserPasswords { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<UserPassword>()
+                .HasKey(x => new {x.UserGuid, x.Date});
+        }
     }
 }
