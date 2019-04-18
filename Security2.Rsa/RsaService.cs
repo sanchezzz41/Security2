@@ -18,10 +18,13 @@ namespace Security2.Rsa
             _logger = logger;
         }
 
+        public RsaService()
+        {
+        }
+
         public string Encrypt(object model, RsaPublicKey publicKey)
         {
             var text = JsonConvert.SerializeObject(model);
-            _logger.LogInformation($"Rsa: \nВходная модель: {text}");
             var enc = new RSACryptoServiceProvider();
             var rsaParametr = publicKey.GetRsaParameters();
             enc.ImportParameters(rsaParametr);
@@ -33,7 +36,6 @@ namespace Security2.Rsa
             var enc = new RSACryptoServiceProvider();
             enc.ImportParameters(privateKey);
             var resultData = Encoding.ASCII.GetString(enc.Decrypt(Convert.FromBase64String(data), false));
-            _logger.LogInformation($"Rsa: \nРезультат: {resultData}");
             return JsonConvert.DeserializeObject<T>(resultData);
         }
 
@@ -42,7 +44,6 @@ namespace Security2.Rsa
             var enc = new RSACryptoServiceProvider();
             enc.ImportParameters(privateKey);
             var resultData = Encoding.ASCII.GetString(enc.Decrypt(Convert.FromBase64String(data), false));
-            _logger.LogInformation($"Rsa: \nРезультат: {resultData}");
             return resultData;
         }
 

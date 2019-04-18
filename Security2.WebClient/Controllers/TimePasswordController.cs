@@ -65,6 +65,7 @@ namespace Security2.WebClient.Controllers
             var pubKey = await GetPubKey();
             loginModel.Email = _rsaService.Encrypt(loginModel.Email, pubKey);
             loginModel.Password = _rsaService.Encrypt(loginModel.Password, pubKey);
+            loginModel.Key = _rsaService.Encrypt(loginModel.Key, pubKey);
 
             var responseBool = await _httpClient.PostAsJsonAsync("TimePassword/login", loginModel);
             responseBool.EnsureSuccessStatusCode();

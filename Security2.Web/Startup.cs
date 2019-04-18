@@ -32,6 +32,7 @@ namespace Security2.Web
             services.AddMvc(config =>
             {
                 //config.OutputFormatters.Insert(0, new CustomOutputFormatter());
+                config.Filters.Add<ErrorHandler>();
             });
 
             services.AddAuthorization(options =>

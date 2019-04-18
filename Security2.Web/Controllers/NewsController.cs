@@ -14,7 +14,7 @@ using Security2.Web.Utils.ResultFilter;
 
 namespace Security2.Web.Controllers
 {
-    [ApiController, Route("[controller]"), Authorize]
+    [ApiController, Route("[controller]")]
     public class NewsController : Controller
     {
         private readonly NewsService _newsService;

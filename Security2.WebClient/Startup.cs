@@ -66,8 +66,7 @@ namespace Security2.WebClient
             services.AddSingleton(optGrons);
             services.AddSwaggerGen(opt =>
             {
-                opt.SwaggerDoc("v1", new Info { Title = "Документация клиента", Version = "v1" });
-
+                opt.SwaggerDoc("v1", new Info { Title = "Документация клиента", Version = "v1",  });
                 opt.DescribeAllEnumsAsStrings();
             });
         }
@@ -79,10 +78,10 @@ namespace Security2.WebClient
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseSwagger();
+            app.UseSwagger(c => { c.RouteTemplate =  "api-docs/{documentName}/swagger.json"; });
             app.UseSwaggerUI(a =>
             {
-                a.SwaggerEndpoint("/swagger/v1/swagger.json", "API");
+                a.SwaggerEndpoint("/api-docs/v1/swagger.json", "API");
                 a.RoutePrefix = "api/help";
             });
             app.UseAuthentication();

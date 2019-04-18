@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -60,10 +61,15 @@ namespace Security2.Web.Controllers
         {
             loginModel.Email = _rsaService.Decrypt<string>(loginModel.Email, _rsaServerKeys.PrivateKey);
             loginModel.Password = _rsaService.Decrypt<string>(loginModel.Password, _rsaServerKeys.PrivateKey);
+            loginModel.Key = _rsaService.Decrypt<string>(loginModel.Key, _rsaServerKeys.PrivateKey);
             var result = _userAccount.AuthrorizeWithTimePassword(loginModel);
             if(result.Item1==null)
                 throw new NullReferenceException("Введенны неверные данные.");
             var user = result.Item1;
+            var key = loginModel.Key;
+            if (!key.All(char.IsDigit))
+                throw new ArgumentException("Ключ не валидный.");
+            _memoryCache.Set(loginModel.Email, key, TimeSpan.FromDays(1));
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Name),
