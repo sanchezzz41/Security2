@@ -35,6 +35,7 @@ namespace Security2.Web.Controllers
         [HttpGet]
         public async Task<List<NewsModel>> Get()
         {
+            var headers = HttpContext.Request.Headers;
             return await _newsService.Get();
         }
 

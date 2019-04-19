@@ -49,7 +49,10 @@ namespace Security2.Web
                     npgOpt => npgOpt.MigrationsAssembly("Security2.Web")));
             services.AddMemoryCache();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie();
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,opt =>
+                {
+                    opt.Cookie.HttpOnly = false;
+                });
             services.AddRsaService();
 
 
@@ -71,12 +74,9 @@ namespace Security2.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             app.UseSwagger();
             app.UseSwaggerUI(a =>
@@ -84,9 +84,7 @@ namespace Security2.Web
                 a.SwaggerEndpoint("/swagger/v1/swagger.json", "API");
                 a.RoutePrefix = "api/help";
             });
-
-            app.UseAuthentication();
-
+            
             app.UseMvcWithDefaultRoute();
         }
 

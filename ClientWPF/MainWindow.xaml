@@ -1,0 +1,56 @@
+﻿<Window x:Class="ClientWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ClientWPF"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="400" Width="450.97">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70*"/>
+            <RowDefinition Height="70*"/>
+            <RowDefinition Height="70*"/>
+            <RowDefinition Height="70*"/>
+            <RowDefinition Height="139*"/>
+        </Grid.RowDefinitions>
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25">Добро пожаловать</TextBlock>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="123*"/>
+                <ColumnDefinition Width="320*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25">Email</TextBlock>
+            <TextBox Grid.Column="1" Margin="10,15" Name="Email" FontSize="18"></TextBox>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="123*"/>
+                <ColumnDefinition Width="320*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25">Пароль</TextBlock>
+            <TextBox Grid.Column="1" Margin="10,15" Name="Password" FontSize="18"></TextBox>
+        </Grid>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="123*"/>
+                <ColumnDefinition Width="320*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25">Ключ</TextBlock>
+            <TextBox Grid.Column="1" Margin="10,15" Name="Key" FontSize="18"></TextBox>
+        </Grid>
+
+        <Grid Grid.Row="4" Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Button Margin="10,20" Click="AuthorizedClick">
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22">Вход</TextBlock>
+            </Button>
+            <Button Margin="10,20" Grid.Column="1" Click="Registration">
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22">Регистрация</TextBlock>
+            </Button>
+        </Grid>
+    </Grid>
+</Window>
