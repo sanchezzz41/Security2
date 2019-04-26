@@ -12,6 +12,9 @@ using Swashbuckle.AspNetCore.Swagger;
 
 namespace Security2.Web
 {
+    /// <summary>
+    /// Настройка сервера
+    /// </summary>
     public class Startup
     {
         public Startup(IConfiguration configuration, IHostingEnvironment hostingEnvironment)
@@ -24,9 +27,7 @@ namespace Security2.Web
         
         private IHostingEnvironment _hostingEnvironment;
         
-        
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        //Настройка DI        
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc(config =>
@@ -37,12 +38,8 @@ namespace Security2.Web
 
             services.AddAuthorization(options =>
             {
-                //options.AddPolicy(
-                //    TestAuthOptions.DefaultScheme,
-                //    policyBuilder => policyBuilder.RequireClaim(ClaimTypes.Email));
             });
-            //services.AddAuthentication(TestAuthOptions.DefaultScheme)
-            //.AddTestAuth(opt => { });
+
 
             services.AddDbContext<DatabaseContext>(opt =>
                 opt.UseNpgsql(Configuration["Database:ConnectionString"],
@@ -70,8 +67,12 @@ namespace Security2.Web
             services.AddSingleton(serverKeys);
 
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        
+        /// <summary>
+        /// Настройка путей и pipeline
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseStaticFiles();
@@ -87,23 +88,5 @@ namespace Security2.Web
             
             app.UseMvcWithDefaultRoute();
         }
-
     }
-
-    //public class CustomOutputFormatter : TextOutputFormatter
-    //{
-    //    public CustomOutputFormatter()
-    //    {
-    //        SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("application/json"));
-
-    //        SupportedEncodings.Add(Encoding.UTF8);
-    //        SupportedEncodings.Add(Encoding.Unicode);
-    //    }
-
-    //    /// <inheritdoc />
-    //    public override async Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
-    //    {
-
-    //    }
-    //}
 }

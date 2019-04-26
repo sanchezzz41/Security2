@@ -14,6 +14,9 @@ using Security2.Web.Utils.ResultFilter;
 
 namespace Security2.Web.Controllers
 {
+    /// <summary>
+    /// Контроллер для работы с новостоями
+    /// </summary>
     [ApiController, Route("[controller]")]
     public class NewsController : Controller
     {
@@ -24,6 +27,12 @@ namespace Security2.Web.Controllers
             _newsService = newsService;
         }
 
+        /// <summary>
+        /// Созд новости
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [JsonEncryptResultFilter]
         [HttpPost]
         public async Task<Guid> Create(string data, [ModelBinder(typeof(CustomJsonModelBinder))] NewsInfo model)
@@ -31,6 +40,10 @@ namespace Security2.Web.Controllers
             return await _newsService.Create(model);
         }
 
+        /// <summary>
+        /// Получение новости
+        /// </summary>
+        /// <returns></returns>
         [JsonEncryptResultFilter]
         [HttpGet]
         public async Task<List<NewsModel>> Get()

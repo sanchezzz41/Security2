@@ -11,6 +11,9 @@ using Security2.Gronsfer;
 
 namespace Security2.Web.Utils.Binders
 {
+    /// <summary>
+    /// Класс для дешифрования модели JSON
+    /// </summary>
     public class CustomJsonModelBinder : IModelBinder
     {
         private readonly GronsfeldService _gronsfeldService;
@@ -36,7 +39,7 @@ namespace Security2.Web.Utils.Binders
             }
 
             var query = request.Query["data"].ToString().Replace(" ", "+");
-            _logger.LogInformation($"Данные с запроса:{query}");
+            _logger.LogInformation($"Данные пришедшие с клиента:{query}");
             var key = _memoryCache.Get<string>(bindingContext.HttpContext.GetEmail());
             //var key = bindingContext.HttpContext.User.FindFirst(KeyGenerator.ClaimType).Value;
             var decryptModel = _gronsfeldService.Decrypt(query, key);

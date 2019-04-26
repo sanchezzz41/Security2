@@ -5,12 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ClientWPF"
         mc:Ignorable="d"
-        Title="NewsWindow" Height="607.063" Width="800">
+        Title="NewsWindow" Height="607.063" Width="993.345">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="296*"/>
-            <ColumnDefinition Width="353*"/>
-            <ColumnDefinition Width="143*"/>
+            <ColumnDefinition Width="368*"/>
+            <ColumnDefinition Width="270*"/>
+            <ColumnDefinition Width="142*"/>
+            <ColumnDefinition Width="205*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="44*"/>
@@ -20,21 +21,27 @@
             <RowDefinition Height="44*"/>
             <RowDefinition Height="289*"/>
         </Grid.RowDefinitions>
-        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="25" Grid.Column="0" Grid.ColumnSpan="3" FontWeight="Bold" >Окно для работы с новостями</TextBlock>
-        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Grid.Column="0" Margin="101,2,101,6" Grid.Row="1" Height="26" Width="94">Заголовок</TextBlock>
-        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Grid.Column="1" Margin="190,2,47,6" Grid.Row="1" Height="26" Width="116" >Содержание</TextBlock>
+        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="25" Grid.Column="0" Grid.ColumnSpan="2" FontWeight="Bold" Height="32" Margin="225,6,43,6" Width="370" >Окно для работы с новостями</TextBlock>
+        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Grid.Column="0" Margin="137,2,137,6" Grid.Row="1" Height="26" Width="94">Заголовок</TextBlock>
+        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Grid.Column="1" Margin="145,2,9,6" Grid.Row="1" Height="26" Width="116" >Содержание</TextBlock>
         <TextBox TextWrapping="Wrap" Grid.Row="2" Margin="10,20" Name="Title" FontSize="18"></TextBox>
         <TextBox  TextWrapping="Wrap"  Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" FontSize="18" Margin="10,20" Name="Content">
         </TextBox>
-        <Button Click="AddNewsClick" Grid.Column="0" Grid.Row="3" Margin="50,1">
-            <TextBlock VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="15">Обновить пароли</TextBlock>
+        <Button Click="Update" Grid.Column="0" Grid.Row="3" Margin="50,1">
+            <TextBlock VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="15">Обновить новости</TextBlock>
         </Button>
         <Button Click="AddNewsClick" Grid.Column="2" Grid.Row="3" Margin="1">
             <TextBlock VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="15">Добавить новость</TextBlock>
         </Button>
-        <TextBlock Grid.Row="4" Grid.ColumnSpan="4" Margin="65,10,65,0" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold">Список новостей</TextBlock>
+        <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Margin="327,10,145,0" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold" Height="27" Width="166">Список новостей</TextBlock>
         <ScrollViewer  Grid.Row="5" Grid.ColumnSpan="3">
             <TextBlock Name="NewsList" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="20" FontWeight="Bold"></TextBlock>
+        </ScrollViewer>
+        <ScrollViewer Grid.Column="4" Margin="10,20" Grid.Row="2" >
+            <TextBlock TextWrapping="Wrap" Margin="5" Name="EncryptCreateData"></TextBlock>
+        </ScrollViewer>
+        <ScrollViewer Grid.Column="4" Grid.RowSpan="10" Grid.Row="5" >
+            <TextBlock TextWrapping="Wrap" Margin="5" Name="EncryptList"></TextBlock>
         </ScrollViewer>
     </Grid>
 </Window>

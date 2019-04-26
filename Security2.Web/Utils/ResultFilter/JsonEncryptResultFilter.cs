@@ -11,6 +11,9 @@ using Security2.Gronsfer;
 
 namespace Security2.Web.Utils.ResultFilter
 {
+    /// <summary>
+    /// Класс для возвращения зашифрованной модели
+    /// </summary>
     public class JsonEncryptResultFilter : Attribute, IResultFilter
     {
         private ILogger _logger;
@@ -28,7 +31,7 @@ namespace Security2.Web.Utils.ResultFilter
             var key = _memoryCache.Get<string>(context.HttpContext.GetEmail());
             var encryptData = JsonConvert.SerializeObject(objResult.Value);
             var resultData = _gronsfeldService.Encrypt(encryptData, key);
-            var test = _gronsfeldService.Decrypt(resultData, key);
+            _logger.LogWarning($"Данные отправляемые клиенту:{resultData}");
             context.Result = new ContentResult()
             {
                 Content = resultData,

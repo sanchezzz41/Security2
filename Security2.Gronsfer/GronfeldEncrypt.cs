@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Security2.Gronsfer
 {
+    /// <summary>
+    /// Класс для работы с симетричным шифрованием
+    /// </summary>
     public class GronfeldEncrypt
     {
         /// <summary>

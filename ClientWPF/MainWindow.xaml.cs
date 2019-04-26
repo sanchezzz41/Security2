@@ -28,7 +28,7 @@ namespace ClientWPF
         }
 
         /// <summary>
-        /// Авторизация на сервере
+        /// Авторизация 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

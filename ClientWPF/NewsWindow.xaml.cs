@@ -54,8 +54,9 @@ namespace ClientWPF
             var content = await res.Content.ReadAsStringAsync();
 
 
-            var afterDecrypt = _gronsfeldService.Decrypt(content, _storage.Key);
+            EncryptList.Text = content;
 
+            var afterDecrypt = _gronsfeldService.Decrypt(content, _storage.Key);
             var result = JsonConvert.DeserializeObject<List<NewsModel>>(afterDecrypt)
                 .OrderByDescending(x=>x.CreatedDate)
                 .Select(
@@ -63,6 +64,15 @@ namespace ClientWPF
             NewsList.Text = string.Join("\n", result);
         }
 
+        /// <summary>
+        /// Метод для получения новостей
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void Update(object sender, RoutedEventArgs e)
+        {
+            UpdateNewsList();
+        }
         /// <summary>
         /// метод для создания новости
         /// </summary>
@@ -76,8 +86,11 @@ namespace ClientWPF
                 Title = Title.Text
             };
             _httpClient.DefaultRequestHeaders.Add(StorageSession.SetCookieName, _storage.Cookie);
+            //MessageBox.Show($"Данные до шифрования:{JsonConvert.SerializeObject(model)}");
             var json = JsonConvert.SerializeObject(model);
             var encryptStr = _gronsfeldService.Encrypt(json, _storage.Key);
+            EncryptCreateData.Text = encryptStr;
+            //MessageBox.Show($"Данные после шифрования:{encryptStr}");
             var res = await _httpClient.PostAsync($"news?data={encryptStr}", null);
             var content = await res.Content.ReadAsStringAsync();
             var afterDecrypt = _gronsfeldService.Decrypt(content, _storage.Key);

@@ -15,6 +15,9 @@ using Security2.Web.Utils;
 
 namespace Security2.Web.Controllers
 {
+    /// <summary>
+    /// Контроллер для временных паролей
+    /// </summary>
     [ApiController, Route("[controller]")]
     public class TimePasswordController : Controller
     {
@@ -34,6 +37,11 @@ namespace Security2.Web.Controllers
             _memoryCache = memoryCache;
         }
 
+        /// <summary>
+        /// Метод регистрации
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost("Register")]
         public async Task<Guid> RegisterWithTimePasswords(UserRegisterWithTimePassword model)
         {
@@ -51,7 +59,7 @@ namespace Security2.Web.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Метод авторизации
         /// </summary>
         /// <param name="loginModel"></param>
         /// <returns>Если true, то надо обновить пароли</returns>
@@ -87,6 +95,12 @@ namespace Security2.Web.Controllers
             return result.Item2;
         }
 
+        /// <summary>
+        /// Метод для 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         [HttpPost("UpdatePasswords"), Authorize]
         public async Task UpdatePasswords(UserRegisterWithTimePassword model)
         {
